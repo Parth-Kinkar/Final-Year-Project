@@ -2,6 +2,9 @@
 
 from rest_framework import serializers
 from .models import CustomUser
+from .models import Project
+from django.contrib.auth import get_user_model
+from django.conf import settings
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,3 +21,24 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
+
+User = get_user_model()
+class ProjectSerializer(serializers.ModelSerializer):
+    creators = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.filter(user_type='student'))
+
+    class Meta:
+        model = Project
+        fields = ['id', 'title', 'description', 'technologies', 'repository_link', 'how_to_run', 'creators']
+        extra_kwargs = {
+            'title': {'required': True},
+            'description': {'required': True},
+            'technologies': {'required': True}, 
+            'repository_link': {'required': True},
+            'student': {'required': False},
+        }
+
+    def validate_technologies(self, value):
+        technologies = value.split(",")
+        if len(technologies) > 5:
+            raise serializers.ValidationError("You can add up to 5 technologies only.")
+        return value
