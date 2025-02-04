@@ -1,0 +1,118 @@
+/* src/components/Login.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap');
+
+body, html {
+  font-family: 'Poppins', sans-serif !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  background-color: #000000 !important;
+}
+
+.login-container {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  height: 100vh !important;
+}
+
+.login-box {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  padding: 30px !important;
+  border-radius: 15px !important;
+  backdrop-filter: blur(10px) !important;
+  max-width: 400px !important; /* Added max-width */
+  width: 100% !important; /* Ensures it doesn't go beyond the container */
+}
+
+.login-title {
+  color: #ffffff !important;
+  text-align: center !important;
+  margin-bottom: 20px !important;
+}
+
+.login-input {
+  width: 100% !important;
+  padding: 10px !important;
+  margin: 10px 0 !important;
+  border: 1px solid #00bfff !important;
+  border-radius: 5px !important;
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+}
+
+.login-button {
+  width: 100% !important;
+  padding: 10px !important;
+  margin-top: 20px !important;
+  border: none !important;
+  border-radius: 25px !important;
+  background-color: #00bfff !important;
+  color: #ffffff !important;
+  font-weight: 500 !important;
+  font-size: 1.2rem !important;
+  cursor: pointer !important;
+  transition: background-color 0.3s ease !important;
+}
+
+.login-button:hover {
+  background-color: #008fc1 !important;
+}
+
+.background {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  z-index: -1 !important;
+}
+
+.light {
+  position: absolute !important;
+  width: 400px !important;
+  height: 400px !important;
+  background: #ffffff !important;
+  filter: blur(50px) !important;
+  opacity: 0.1 !important;
+  border-radius: 50% !important;
+  animation: pulse 5s infinite !important;
+}
+
+.light1 {
+  top: 20% !important;
+  left: 10% !important;
+}
+
+.light2 {
+  top: 20% !important;
+  right: 10% !important;
+}
+
+.light3 {
+  bottom: 20% !important;
+  left: 10% !important;
+}
+
+.light4 {
+  bottom: 20% !important;
+  right: 10% !important;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1) !important;
+    opacity: 0.1 !important;
+  }
+  50% {
+    transform: scale(1.5) !important;
+    opacity: 0.3 !important;
+  }
+  100% {
+    transform: scale(1) !important;
+    opacity: 0.1 !important;
+  }
+}
