@@ -25,9 +25,6 @@ def validate_technologies(value):
         raise ValidationError("You can add up to 5 technologies only.")
     return value
 
-from django.db import models
-from django.conf import settings
-
 class Project(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
