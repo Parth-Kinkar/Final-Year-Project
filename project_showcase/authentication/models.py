@@ -23,10 +23,10 @@ class CustomUser(AbstractUser):
         ('student', 'Student'),
         ('recruiter', 'Recruiter'),
         ('admin', 'College Admin'),
-        ('teacher', 'Teacher'),
+        ('teacher', 'Teacher'), 
     )
     user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES)
-    profile_photo = models.ImageField(upload_to='profile_photos/', blank=True, null=True)  # Added Profile Photo Field
+    profile_photo = models.ImageField(upload_to='profile_photos/', null=True)  # Added Profile Photo Field
 
     def __str__(self):
         return f"{self.username} ({self.get_user_type_display()})"
@@ -37,6 +37,10 @@ def validate_technologies(value):
     if len(technologies) > 5:
         raise ValidationError("You can add up to 5 technologies only.")
     return value
+
+def validate_rating(value):
+    if value < 0 or value > 5:
+        raise ValidationError('Rating must be between 1 and 5.')
 
 class Department(models.Model):
     DEPARTMENT_CHOICES = [
@@ -93,6 +97,7 @@ class Project(models.Model):
     how_to_run = models.TextField(blank=True, null=True)  # Not compulsory
     creators = models.ManyToManyField(CustomUser, limit_choices_to={'user_type': 'student'})  # Many-to-many field for students
     screenshots = models.ImageField(upload_to='screenshots/', blank=True, null=True)  # Optional, max 10 screenshots
+    rating = models.PositiveIntegerField(validators=[validate_rating], default=3)  # Add the rating field with default value
 
     def __str__(self):
         return self.title
