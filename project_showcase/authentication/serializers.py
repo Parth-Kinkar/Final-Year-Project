@@ -43,7 +43,7 @@ class StudentSerializer(serializers.ModelSerializer):
 # Project Serializer (Unchanged)
 User = get_user_model()
 class ProjectSerializer(serializers.ModelSerializer):
-    creators = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.filter(user_type='student'))
+    creators = serializers.SerializerMethodField()  # Use a custom method to get names
 
     class Meta:
         model = Project
@@ -54,6 +54,8 @@ class ProjectSerializer(serializers.ModelSerializer):
             'technologies': {'required': True}, 
             'repository_link': {'required': True},
         }
+    def get_creators(self, obj):
+        return [user.username for user in obj.creators.all()]  # Fetch names instead of IDs
 
     def validate_technologies(self, value):
         technologies = value.split(",")

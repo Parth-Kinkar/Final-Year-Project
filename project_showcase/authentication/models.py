@@ -60,6 +60,7 @@ class Student(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True, limit_choices_to={'user_type': 'student'})
     roll_number = models.CharField(max_length=20, unique=True)
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True)  # Linked to Department model
+    interested_technologies = models.CharField(max_length=255, blank=True, null=True, validators=[validate_technologies])  # New Field
 
     def __str__(self):
         return self.user.username

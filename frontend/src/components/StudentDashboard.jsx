@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // For redirection
+import { useNavigate } from "react-router-dom"; // For navigation
 import axios from "axios";
 import "./StudentDashboard.css";
 
 const StudentDashboard = () => {
   const [user, setUser] = useState(null);
   const [topProjects, setTopProjects] = useState([]);
+  const [curatedProjects, setCuratedProjects] = useState([]);
   const token = localStorage.getItem("token");
-  const navigate = useNavigate(); // Hook to navigate between pages
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -20,14 +21,27 @@ const StudentDashboard = () => {
         console.error("Error fetching user details:", error);
       }
     };
+    
 
-    const fetchTopProjects = async () => {
+    const fetchProjects = async () => {
       try {
         const response = await axios.get("http://127.0.0.1:8000/auth/projects/", {
           headers: { Authorization: `Bearer ${token}` },
         });
+
         const sortedProjects = response.data.sort((a, b) => b.rating - a.rating);
-        setTopProjects(sortedProjects.slice(0, 3));
+        setTopProjects(sortedProjects.slice(0, 3)); // Top 3 projects
+
+        if (user && user.interested_technologies) {
+          // Filter curated projects based on user's interests
+          const curatedList = sortedProjects.filter((project) =>
+            project.technologies.some((tech) => user.interested_technologies.includes(tech))
+          );
+          setCuratedProjects(curatedList.length > 0 ? curatedList : sortedProjects.slice(3, 7));
+        } else {
+          // If no preference, show random projects
+          setCuratedProjects(sortedProjects.slice(0,3));
+        }
       } catch (error) {
         console.error("Error fetching projects:", error);
       }
@@ -35,9 +49,9 @@ const StudentDashboard = () => {
 
     if (token) {
       fetchUserDetails();
-      fetchTopProjects();
+      fetchProjects();
     }
-  }, [token]);
+  }, [token, user]);
 
   return (
     <div className="dashboard-container">
@@ -71,9 +85,30 @@ const StudentDashboard = () => {
             Upload Your Project
           </button>
         </div>
+
+        {/* Projects Curated for You Section */}
         <div className="curated-projects-section">
-          <h3>Projects Curated for You:</h3>
-          <p>Lorem ipsum content here...</p>
+          <h3>Projects Curated for You</h3>
+          <div className="curated-projects-list">
+            {curatedProjects.length > 0 ? (
+              curatedProjects.map((project) => (
+                <div key={project.id} className="project-tile">
+                  <h4 className="project-title">{project.title}</h4>
+                  <p className="project-description">{project.description}</p>
+                  <div className="project-footer">
+                    <span className="project-creators">
+                    👨‍🎓 {project.creators.join(", ")}
+                    </span>
+                    <span className="project-technologies">
+                      💻 {project.technologies}
+                    </span>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p>No curated projects available</p>
+            )}
+          </div>
         </div>
       </div>
 
