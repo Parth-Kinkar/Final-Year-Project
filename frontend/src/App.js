@@ -7,6 +7,7 @@ import StudentDashboard from './components/StudentDashboard';
 import TeacherDashboard from './components/TeacherDashboard';
 import AdminDashboard from './components/AdminDashboard';
 import RecruiterDashboard from './components/RecruiterDashboard.jsx';
+import ProjectPage from './components/ProjectPage';
 
 function App() {
   const [message, setMessage] = useState('');
@@ -21,6 +22,7 @@ function App() {
         <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/recruiter-dashboard" element={<RecruiterDashboard />} />
+        <Route path="/project/:projectId" element={<ProjectPage />} />
       </Routes>
     </Router>
   );

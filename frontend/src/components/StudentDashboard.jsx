@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // For navigation
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./StudentDashboard.css";
 
@@ -21,7 +21,6 @@ const StudentDashboard = () => {
         console.error("Error fetching user details:", error);
       }
     };
-    
 
     const fetchProjects = async () => {
       try {
@@ -30,17 +29,17 @@ const StudentDashboard = () => {
         });
 
         const sortedProjects = response.data.sort((a, b) => b.rating - a.rating);
-        setTopProjects(sortedProjects.slice(0, 3)); // Top 3 projects
+        setTopProjects(sortedProjects.slice(0, 3));
 
         if (user && user.interested_technologies) {
-          // Filter curated projects based on user's interests
           const curatedList = sortedProjects.filter((project) =>
-            project.technologies.some((tech) => user.interested_technologies.includes(tech))
+            project.technologies
+              .split(", ")
+              .some((tech) => user.interested_technologies.includes(tech))
           );
           setCuratedProjects(curatedList.length > 0 ? curatedList : sortedProjects.slice(3, 7));
         } else {
-          // If no preference, show random projects
-          setCuratedProjects(sortedProjects.slice(0,3));
+          setCuratedProjects(sortedProjects.slice(0, 3));
         }
       } catch (error) {
         console.error("Error fetching projects:", error);
@@ -68,7 +67,9 @@ const StudentDashboard = () => {
           <ul>
             {topProjects.length > 0 ? (
               topProjects.map((project) => (
-                <li key={project.id}>{project.title} (⭐ {project.rating})</li>
+                <li key={project.id} onClick={() => navigate(`/project/${project.id}`)} style={{ cursor: "pointer" }}>
+                  {project.title} (⭐ {project.rating})
+                </li>
               ))
             ) : (
               <p>No top projects available</p>
@@ -92,16 +93,17 @@ const StudentDashboard = () => {
           <div className="curated-projects-list">
             {curatedProjects.length > 0 ? (
               curatedProjects.map((project) => (
-                <div key={project.id} className="project-tile">
+                <div
+                  key={project.id}
+                  className="project-tile"
+                  onClick={() => navigate(`/project/${project.id}`)}
+                  style={{ cursor: "pointer" }}
+                >
                   <h4 className="project-title">{project.title}</h4>
                   <p className="project-description">{project.description}</p>
                   <div className="project-footer">
-                    <span className="project-creators">
-                    👨‍🎓 {project.creators.join(", ")}
-                    </span>
-                    <span className="project-technologies">
-                      💻 {project.technologies}
-                    </span>
+                    <span className="project-creators">👨‍🎓 {project.creators.join(", ")}</span>
+                    <span className="project-technologies">💻 {project.technologies}</span>
                   </div>
                 </div>
               ))
