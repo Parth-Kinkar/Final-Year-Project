@@ -192,7 +192,7 @@ const UploadProject = () => {
               type="file"
               accept="image/*"
               onChange={(e) =>
-                setFormData({ ...formData, screenshots: e.target.files })
+                setFormData({ ...formData, screenshots: e.target.files[0] })
               }
             />
           </label>
