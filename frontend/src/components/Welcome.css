@@ -13,7 +13,6 @@ body, html {
   background-image: 'C:\Users\Whydoiexist\Desktop\background.jpg';
   color: #fff;
   height: 100%;
-  overflow: hidden;
 }
 
 .welcome {
@@ -40,6 +39,7 @@ body, html {
 .title {
   font-size: 1.8rem;
   font-weight: 700;
+  color: white;
 }
 
 .nav-button {
@@ -58,6 +58,7 @@ body, html {
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 20px;
+  color: white;
 }
 
 .sub-title {
@@ -68,6 +69,7 @@ body, html {
   margin: 0 auto;
   margin-top: 3vh;
   margin-bottom: 5vh;
+  color: white;
 }
 
 .explore-button {

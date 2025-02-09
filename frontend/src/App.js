@@ -8,6 +8,7 @@ import TeacherDashboard from './components/TeacherDashboard';
 import AdminDashboard from './components/AdminDashboard';
 import RecruiterDashboard from './components/RecruiterDashboard.jsx';
 import ProjectPage from './components/ProjectPage';
+import UploadProject from './components/UploadProject';
 
 function App() {
   const [message, setMessage] = useState('');
@@ -22,7 +23,8 @@ function App() {
         <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/recruiter-dashboard" element={<RecruiterDashboard />} />
-        <Route path="/project/:projectId" element={<ProjectPage />} />
+        <Route path="/project/:id" element={<ProjectPage />} />
+        <Route path="/upload-project" element={<UploadProject />} />
       </Routes>
     </Router>
   );

@@ -75,6 +75,9 @@ class ProjectDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProjectSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def get_serializer_context(self):
+        return {"request": self.request}  # Pass request to serializer
+
 class ProjectCreateView(APIView):
     permission_classes = [IsAuthenticated]  
 
@@ -84,10 +87,12 @@ class ProjectCreateView(APIView):
 
         if serializer.is_valid():
             project = serializer.save()
+
+            # Convert creator IDs to User objects
             creators_data = data.get('creators', [])
-            if creators_data:
-                project.creators.set(creators_data)
-                project.save()
+            students = CustomUser.objects.filter(id__in=creators_data, user_type='student')
+            project.creators.set(students)  
+            
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -96,3 +101,20 @@ class TeacherListView(generics.ListAPIView):
     queryset = CustomUser.objects.filter(user_type='teacher')
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+# Fetch Students by Year and Department
+class FilteredStudentListView(generics.ListAPIView):
+    serializer_class = StudentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = Student.objects.select_related("user", "department").all()
+        year = self.request.query_params.get("year")
+        department = self.request.query_params.get("department")
+
+        if year:
+            queryset = queryset.filter(year=year)
+        if department:
+            queryset = queryset.filter(department__name=department)
+
+        return queryset

@@ -57,9 +57,17 @@ class Department(models.Model):
 
 # Separate Models for Different Users
 class Student(models.Model):
+    YEAR_CHOICES = [
+        ('1', 'First Year'),
+        ('2', 'Second Year'),
+        ('3', 'Third Year'),
+        ('4', 'Final Year'),
+    ]
+    
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True, limit_choices_to={'user_type': 'student'})
     roll_number = models.CharField(max_length=20, unique=True)
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True)  # Linked to Department model
+    year = models.CharField(max_length=1, choices=YEAR_CHOICES, default='1')  # New Year Field
     interested_technologies = models.CharField(max_length=255, blank=True, null=True, validators=[validate_technologies])  # New Field
 
     def __str__(self):
@@ -93,12 +101,14 @@ class CollegeAdmin(models.Model):
 class Project(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    technologies = models.CharField(max_length=255, validators=[validate_technologies])  # Apply the validation
+    technologies = models.CharField(max_length=255, validators=[validate_technologies])  
     repository_link = models.URLField()
-    how_to_run = models.TextField(blank=True, null=True)  # Not compulsory
-    creators = models.ManyToManyField(CustomUser, limit_choices_to={'user_type': 'student'})  # Many-to-many field for students
-    screenshots = models.ImageField(upload_to='screenshots/', blank=True, null=True)  # Optional, max 10 screenshots
-    rating = models.PositiveIntegerField(validators=[validate_rating], default=3)  # Add the rating field with default value
+    how_to_run = models.TextField(blank=True, null=True)  
+    creators = models.ManyToManyField(CustomUser, limit_choices_to={'user_type': 'student'})  
+    screenshots = models.ImageField(upload_to='screenshots/', blank=True, null=True)  
+    rating = models.PositiveIntegerField(validators=[validate_rating], default=3)  
+    demo_link = models.URLField(blank=True, null=True) 
 
     def __str__(self):
         return self.title
+

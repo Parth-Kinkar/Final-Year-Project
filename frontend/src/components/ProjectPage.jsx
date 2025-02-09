@@ -1,39 +1,85 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom'; // Import useParams
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import "./ProjectPage.css";
 
 const ProjectPage = () => {
-  const { projectId } = useParams(); // Get the project ID from the URL
+  const { id } = useParams();
   const [project, setProject] = useState(null);
+  const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    const fetchProjectDetails = async () => {
+    const fetchProject = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/auth/projects/${projectId}/`, { // Use projectId in the URL
+        const response = await axios.get(`http://127.0.0.1:8000/auth/projects/${id}/`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setProject(response.data);
       } catch (error) {
-        console.error("Error fetching project details:", error);
+        console.error("Error fetching project:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchProjectDetails();
-  }, [projectId, token]); // Add projectId to the dependency array
+    fetchProject();
+  }, [id, token]);
 
-  if (!project) {
-    return <div>Loading...</div>;
-  }
+  if (loading) return <p>Loading...</p>;
+  if (!project) return <p>Project not found.</p>;
 
   return (
-    <div className="project-page-container">
-      <h1>{project.title}</h1>
-      <p>{project.description}</p>
-      {/* ... other project details ... */}
-      <p>Creators: {project.creators.join(", ")}</p>
-      <p>Technologies: {project.technologies}</p>
-      {/* ... more details as needed ... */}
+    <div className="project-container">
+      {/* Project Header */}
+      <div className="project-header">
+        <h1 className="project-title">{project.title}</h1>
+        <span className="project-rating">⭐ {project.rating}/5</span>
+      </div>
+
+      {/* Creators */}
+      <p className="project-creators">👨‍🎓 Created by: {project.creators.join(", ")}</p>
+
+      {/* Technologies */}
+      <p className="project-technologies">
+        💻 Technologies: {project.technologies.split(", ").join(" | ")}
+      </p>
+
+      {/* Overview */}
+      <h2 className="section-title">Overview</h2>
+      <p className="project-description">{project.description}</p>
+
+      {/* Installation */}
+      <h2 className="section-title">Installation</h2>
+      <p className="how-to-run">{project.how_to_run}</p>
+
+      {/* Buttons */}
+      <div className="project-buttons">
+        <a href={project.repository_link} target="_blank" rel="noopener noreferrer" className="btn">
+          View on GitHub
+        </a>
+        {project.demo_link && (  // ✅ Conditionally render the button
+          <a href={project.demo_link} target="_blank" rel="noopener noreferrer" className="btn">
+            View Demo
+          </a>
+        )}
+      </div>
+
+      {/* Media */}
+      <h2 className="section-title">Media</h2>
+      {project.screenshots ? (
+        <img
+          src={project.screenshots}
+          alt="Project Screenshot"
+          className="project-screenshot"
+        />
+      ) : (
+        <p>No screenshot available.</p>
+      )}
+
+      {/* Related Projects */}
+      <h2 className="section-title">Related Projects</h2>
+      <p>(Related projects will be added here later)</p>
     </div>
   );
 };

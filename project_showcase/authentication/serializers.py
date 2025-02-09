@@ -43,19 +43,28 @@ class StudentSerializer(serializers.ModelSerializer):
 # Project Serializer (Unchanged)
 User = get_user_model()
 class ProjectSerializer(serializers.ModelSerializer):
-    creators = serializers.SerializerMethodField()  # Use a custom method to get names
+    screenshots = serializers.ImageField(required=False)  # Allow image uploads
+    creators = serializers.PrimaryKeyRelatedField(
+        queryset=CustomUser.objects.filter(user_type='student'), many=True
+    )
 
     class Meta:
         model = Project
-        fields = ['id', 'title', 'description', 'technologies', 'repository_link', 'how_to_run', 'creators', 'rating']
+        fields = ['id', 'title', 'description', 'technologies', 'repository_link', 
+                  'how_to_run', 'creators', 'rating', 'screenshots', 'demo_link']
         extra_kwargs = {
             'title': {'required': True},
             'description': {'required': True},
             'technologies': {'required': True}, 
             'repository_link': {'required': True},
         }
-    def get_creators(self, obj):
-        return [user.username for user in obj.creators.all()]  # Fetch names instead of IDs
+
+    def get_screenshots(self, obj):
+        request = self.context.get('request')
+        if obj.screenshots:
+            return request.build_absolute_uri(obj.screenshots.url)
+        return None
+
 
     def validate_technologies(self, value):
         technologies = value.split(",")

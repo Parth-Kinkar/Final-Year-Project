@@ -2,3 +2,7 @@
   text-align: center;
   margin: 2rem;
 }
+html, body {
+  overflow-y: auto; /* Allows vertical scrolling */
+  height: auto;
+}

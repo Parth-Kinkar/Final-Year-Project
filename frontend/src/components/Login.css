@@ -6,7 +6,6 @@ body, html {
   font-family: 'Poppins', sans-serif !important;
   margin: 0 !important;
   padding: 0 !important;
-  overflow: hidden !important;
   background-color: #000000 !important;
 }
 
@@ -100,6 +99,10 @@ body, html {
 .light4 {
   bottom: 20% !important;
   right: 10% !important;
+}
+
+option {
+  color: black;
 }
 
 @keyframes pulse {

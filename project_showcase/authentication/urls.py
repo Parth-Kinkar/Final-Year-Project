@@ -6,6 +6,7 @@ from .views import ProjectCreateView, ProjectListView, ProjectDetailView
 from .views import StudentListView, TeacherListView, UserDetailView, DepartmentListView
 from django.conf import settings
 from django.conf.urls.static import static
+from .views import FilteredStudentListView
 
 
 urlpatterns = [
@@ -18,6 +19,7 @@ urlpatterns = [
     path('teachers/', TeacherListView.as_view(), name='teacher-list'),
     path('user/', UserDetailView.as_view(), name='user-detail'),
     path('departments/', DepartmentListView.as_view(), name='department-list'),
+    path('students/filter/', FilteredStudentListView.as_view(), name='filtered-student-list'),
 ] 
 
 if settings.DEBUG:
