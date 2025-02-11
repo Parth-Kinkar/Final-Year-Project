@@ -75,7 +75,7 @@ const StudentDashboard = () => {
               <p>No top projects available</p>
             )}
           </ul>
-          <button>View All Projects</button>
+          <button onClick={() => navigate("/all-projects")}>View All Projects</button>
         </div>
       </div>
 

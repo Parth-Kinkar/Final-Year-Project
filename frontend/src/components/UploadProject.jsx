@@ -58,17 +58,27 @@ const UploadProject = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const projectData = new FormData();
-    console.log(formData);
-    Object.keys(formData).forEach((key) => {
+  
+    // Ensure the correct department ID is sent, not department name
+    const selectedDepartment = departments.find(
+      (dept) => dept.name === formData.department
+    );
+  
+    const finalFormData = {
+      ...formData,
+      department: selectedDepartment ? selectedDepartment.id : null, // Send department ID
+    };
+  
+    Object.keys(finalFormData).forEach((key) => {
       if (key === "creators") {
-        formData[key].forEach((creator) =>
+        finalFormData[key].forEach((creator) =>
           projectData.append("creators", creator)
         );
       } else {
-        projectData.append(key, formData[key]);
+        projectData.append(key, finalFormData[key]);
       }
     });
-
+  
     try {
       await axios.post(
         "http://127.0.0.1:8000/auth/projects/create/",

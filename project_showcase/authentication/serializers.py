@@ -51,7 +51,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ['id', 'title', 'description', 'technologies', 'repository_link', 
-                  'how_to_run', 'creators', 'rating', 'screenshots', 'demo_link']
+                  'how_to_run', 'creators', 'rating', 'screenshots', 'demo_link', 'department', 'year']
         extra_kwargs = {
             'title': {'required': True},
             'description': {'required': True},

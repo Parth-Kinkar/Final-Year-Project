@@ -107,7 +107,10 @@ class Project(models.Model):
     creators = models.ManyToManyField(CustomUser, limit_choices_to={'user_type': 'student'})  
     screenshots = models.ImageField(upload_to='screenshots/', blank=True, null=True)  
     rating = models.PositiveIntegerField(validators=[validate_rating], default=3)  
-    demo_link = models.URLField(blank=True, null=True) 
+    demo_link = models.URLField(blank=True, null=True)
+
+    department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True)  # Linking Department model
+    year = models.CharField(max_length=1, choices=Student.YEAR_CHOICES)  # Using the same year choices from Student
 
     def __str__(self):
         return self.title
