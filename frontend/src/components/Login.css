@@ -1,118 +1,142 @@
-/* src/components/Login.css */
-
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap');
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body, html {
-  font-family: 'Poppins', sans-serif !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-  background-color: #000000 !important;
+  margin-bottom: 110px;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(to right, #ffffff, #f5f5f5);
 }
 
 .login-container {
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center !important;
-  align-items: center !important;
-  height: 100vh !important;
+  display: flex;
+  width: 900px;
+  height: 500px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
 }
 
-.login-box {
-  background-color: rgba(255, 255, 255, 0.1) !important;
-  padding: 30px !important;
-  border-radius: 15px !important;
-  backdrop-filter: blur(10px) !important;
-  max-width: 400px !important; /* Added max-width */
-  width: 100% !important; /* Ensures it doesn't go beyond the container */
+.left-panel {
+  margin-bottom: 20px;
+  flex: 1;
+  background: #ffb600;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 30px;
 }
 
-.login-title {
-  color: #ffffff !important;
-  text-align: center !important;
-  margin-bottom: 20px !important;
+.left-panel h1 {
+  font-size: 50px;
+  color: white;
 }
 
-.login-input {
-  width: 100% !important;
-  padding: 10px !important;
-  margin: 10px 0 !important;
-  border: 1px solid #00bfff !important;
-  border-radius: 5px !important;
-  background-color: rgba(255, 255, 255, 0.2) !important;
-  color: #ffffff !important;
+.role-text {
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+}
+
+.role-dropdown {
+  width: 80%;
+  padding: 10px;
+  margin-top: 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: none;
+  text-align: center;
+}
+
+.right-panel {
+  flex: 1;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.welcome-text {
+  font-size: 24px;
+  font-weight: bold;
+  color: black;
+}
+
+.sub-text {
+  font-size: 14px;
+  color: gray;
+  margin-bottom: 20px;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: #f7f7f7;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+.input-group input {
+  border: none;
+  background: none;
+  flex: 1;
+  padding: 10px;
+  outline: none;
+}
+
+.icon {
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+.show-password {
+  font-size: 12px;
+  color: #007bff;
+  cursor: pointer;
+}
+
+.recovery-text {
+  color: #ffb600;
+  font-size: 14px;
+  text-align: right;
+  width: 100%;
+  margin-bottom: 15px;
+  cursor: pointer;
 }
 
 .login-button {
-  width: 100% !important;
-  padding: 10px !important;
-  margin-top: 20px !important;
-  border: none !important;
-  border-radius: 25px !important;
-  background-color: #00bfff !important;
-  color: #ffffff !important;
-  font-weight: 500 !important;
-  font-size: 1.2rem !important;
-  cursor: pointer !important;
-  transition: background-color 0.3s ease !important;
+  width: 100%;
+  padding: 12px;
+  background: #ffb600;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
 
 .login-button:hover {
-  background-color: #008fc1 !important;
+  background: #e6a500;
 }
 
-.background {
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  overflow: hidden !important;
-  z-index: -1 !important;
-}
-
-.light {
-  position: absolute !important;
-  width: 400px !important;
-  height: 400px !important;
-  background: #ffffff !important;
-  filter: blur(50px) !important;
-  opacity: 0.1 !important;
-  border-radius: 50% !important;
-  animation: pulse 5s infinite !important;
-}
-
-.light1 {
-  top: 20% !important;
-  left: 10% !important;
-}
-
-.light2 {
-  top: 20% !important;
-  right: 10% !important;
-}
-
-.light3 {
-  bottom: 20% !important;
-  left: 10% !important;
-}
-
-.light4 {
-  bottom: 20% !important;
-  right: 10% !important;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1) !important;
-    opacity: 0.1 !important;
-  }
-  50% {
-    transform: scale(1.5) !important;
-    opacity: 0.3 !important;
-  }
-  100% {
-    transform: scale(1) !important;
-    opacity: 0.1 !important;
-  }
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 10px;
 }
