@@ -1,12 +1,14 @@
 /* General Styling */
 .upload-container {
-    max-width: 800px;
+    width: 70vw;
+    height: 100vh;
     margin: 40px auto;
     padding: 20px;
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     color: black;
+
   }
   
   h1 {

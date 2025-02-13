@@ -10,7 +10,7 @@ const ViewAllProjects = () => {
   const [technologies, setTechnologies] = useState([]);
   const [filters, setFilters] = useState({ department: "", year: "", technology: "" });
   const [currentPage, setCurrentPage] = useState(1);
-  const projectsPerPage = 6;
+  const projectsPerPage = 5;
 
   useEffect(() => {
     const fetchProjects = async () => {

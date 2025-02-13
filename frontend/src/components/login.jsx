@@ -1,15 +1,14 @@
-// src/components/Login.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './Login.css'; // Import custom CSS
+import './Login.css';
 
 const Login = () => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState(''); 
-  const [password, setPassword] = useState(''); 
-  const [role, setRole] = useState(''); 
-  const [errorMessage, setErrorMessage] = useState(''); 
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [role, setRole] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,48 +42,53 @@ const Login = () => {
   };
 
   return (
-    <div className="login-page">
-      <div className="login-container">
-        <div className="login-box">
-          <h2 className="login-title">Login</h2>
-          {errorMessage && (
-            <p className="error-message">{errorMessage}</p>
-          )}
-          <form onSubmit={handleSubmit}>
+    <div className="login-container">
+      <div className="left-panel">
+        <h1>Hi</h1>
+        <p className="role-text">Choose Your Role</p>
+        <select
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+          className="role-dropdown"
+        >
+          <option value="">Select</option>
+          <option value="Student">Student</option>
+          <option value="Teacher">Teacher</option>
+          <option value="Admin">College Admin</option>
+          <option value="Recruiter">Recruiter</option>
+        </select>
+      </div>
+
+      <div className="right-panel">
+        <h2 className="welcome-text">Hello Again!</h2>
+        <p className="sub-text">Welcome back, you’ve been missed!</p>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
+        <form onSubmit={handleSubmit}>
+          <div className="input-group">
+            <span className="icon">👤</span>
             <input
               type="text"
-              placeholder="Username"
+              placeholder="User Name"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="login-input"
             />
+          </div>
+
+          <div className="input-group">
+            <span className="icon">🔒</span>
             <input
               type="password"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="login-input"
             />
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="login-input"
-            >
-              <option value="">Login as</option>
-              <option value="Student">Student</option>
-              <option value="Teacher">Teacher</option>
-              <option value="College Admin">College Admin</option>
-              <option value="Recruiter">Recruiter</option>
-            </select>
-            <button type="submit" className="login-button">Login</button>
-          </form>
-        </div>
-      </div>
-      <div className="background">
-        <div className="light light1"></div>
-        <div className="light light2"></div>
-        <div className="light light3"></div>
-        <div className="light light4"></div>
+            <span className="show-password">SHOW</span>
+          </div>
+
+          <p className="recovery-text">Recovery Password</p>
+
+          <button type="submit" className="login-button">Login</button>
+        </form>
       </div>
     </div>
   );
