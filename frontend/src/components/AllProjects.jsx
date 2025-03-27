@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";  // Import useNavigate
 import axios from "axios";
 import "./AllProjects.css";
 
@@ -11,6 +12,7 @@ const ViewAllProjects = () => {
   const [filters, setFilters] = useState({ department: "", year: "", technology: "" });
   const [currentPage, setCurrentPage] = useState(1);
   const projectsPerPage = 5;
+  const navigate = useNavigate();  // Initialize useNavigate
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -33,17 +35,15 @@ const ViewAllProjects = () => {
     axios.get("http://127.0.0.1:8000/auth/departments/").then((response) => {
       setDepartments(response.data);
     });
-    // axios.get("http://127.0.0.1:8000/auth/technologies/").then((response) => {
-    //   setTechnologies(response.data);
-    // });
   }, []);
+
   const departmentNames = {
     1: "CSE",
     2: "EE",
     3: "ME",
     4: "CE",
     5: "ETC"
-};
+  };
 
   const filteredProjects = projects
     .filter((project) => project.title.toLowerCase().includes(search.toLowerCase()))
@@ -51,6 +51,7 @@ const ViewAllProjects = () => {
     .filter((project) => (filters.year ? project.year === filters.year : true))
     .filter((project) => (filters.technology ? project.technologies.includes(filters.technology) : true))
     .sort((a, b) => b.rating - a.rating);
+
   const indexOfLastProject = currentPage * projectsPerPage;
   const indexOfFirstProject = indexOfLastProject - projectsPerPage;
   const currentProjects = filteredProjects.slice(indexOfFirstProject, indexOfLastProject);
@@ -61,6 +62,10 @@ const ViewAllProjects = () => {
     if (page > 0 && page <= totalPages) {
       setCurrentPage(page);
     }
+  };
+
+  const handleProjectClick = (projectId) => {
+    navigate(`/project/${projectId}`);  // Navigate to project details page
   };
 
   return (
@@ -95,7 +100,12 @@ const ViewAllProjects = () => {
       </div>
       <div className="projects-list">
         {currentProjects.map((project) => (
-          <div key={project.id} className="project-tile">
+          <div 
+            key={project.id} 
+            className="project-tile"
+            onClick={() => handleProjectClick(project.id)}  // Click event to navigate
+            style={{ cursor: "pointer" }}  // Indicate clickable behavior
+          >
             <h3>{project.title}</h3>
             <p>{project.description}</p>
           </div>

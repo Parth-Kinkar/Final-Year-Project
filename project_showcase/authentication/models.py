@@ -69,7 +69,8 @@ class Student(models.Model):
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True)  # Linked to Department model
     year = models.CharField(max_length=1, choices=YEAR_CHOICES, default='1')  # New Year Field
     interested_technologies = models.CharField(max_length=255, blank=True, null=True, validators=[validate_technologies])  # New Field
-
+    skills = models.CharField(max_length=255, blank=True, null=True)  # New: Store multiple skills (comma-separated)
+    resume = models.FileField(upload_to='resumes/', blank=True, null=True)  # New: Upload Resume (PDF)
     def __str__(self):
         return self.user.username
 
@@ -108,7 +109,6 @@ class Project(models.Model):
     screenshots = models.ImageField(upload_to='screenshots/', blank=True, null=True)  
     rating = models.PositiveIntegerField(validators=[validate_rating], default=3)  
     demo_link = models.URLField(blank=True, null=True)
-
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True)  # Linking Department model
     year = models.CharField(max_length=1, choices=Student.YEAR_CHOICES)  # Using the same year choices from Student
 
