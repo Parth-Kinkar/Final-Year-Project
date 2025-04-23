@@ -14,13 +14,26 @@ class UserDetailView(APIView):
 
     def get(self, request):
         user = request.user
+        student_profile = getattr(user, "student", None)  # Check if user is a student
+
         return Response({
-            "id": user.id,
+            "id": user.id, 
             "username": user.username,
-            "full_name": user.get_full_name(),
+            "full_name": student_profile.full_name if student_profile else user.get_full_name(),
             "email": user.email,
             "user_type": user.user_type,
             "profile_photo": request.build_absolute_uri(user.profile_photo.url) if user.profile_photo else None,
+            "contact_number": student_profile.contact_number if student_profile else None,
+            "skills": student_profile.skills if student_profile else None,
+            "interested_technologies": student_profile.interested_technologies if student_profile else None,
+            "projects_created": [
+                {"id": project.id, "title": project.title, "description": project.description}
+                for project in Project.objects.filter(creators=user)
+            ] if student_profile else [],
+            "github": student_profile.github if student_profile else None,  # Include GitHub link
+            "linkedin": student_profile.linkedin if student_profile else None,  # Include LinkedIn link
+            "portfolio": student_profile.portfolio if student_profile else None,  # Include Portfolio link
+            "resume": request.build_absolute_uri(student_profile.resume.url) if student_profile and student_profile.resume else None,  # Include Resume
         })
 
 # Register View (Unchanged)
@@ -118,3 +131,56 @@ class FilteredStudentListView(generics.ListAPIView):
             queryset = queryset.filter(department__name=department)
 
         return queryset
+
+#Bookmarked projects view:
+class BookmarkProjectView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, project_id):
+        student = get_object_or_404(Student, user=request.user)
+        project = get_object_or_404(Project, id=project_id)
+
+        if project in student.bookmarked_projects.all():
+            student.bookmarked_projects.remove(project)  # Remove if already bookmarked
+            message = "Removed from bookmarks."
+        else:
+            student.bookmarked_projects.add(project)  # Add if not bookmarked
+            message = "Added to bookmarks."
+
+        student.save()
+        return Response({"message": message, "bookmarked_projects": list(student.bookmarked_projects.values_list('id', flat=True))})
+
+# Edit profile View
+class EditUserProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request):
+        user = request.user  # Get the logged-in user
+        data = request.data  # Data from the frontend
+        
+        try:
+            # Update fields in the CustomUser model
+            user.email = data.get("email", user.email)
+            user.save()
+
+            # Update fields in the Student model (if user is a student)
+            student_profile = getattr(user, "student", None)  # Get the related Student profile
+            if student_profile:
+                student_profile.full_name = data.get("full_name", student_profile.full_name)
+                student_profile.skills = data.get("skills", student_profile.skills)
+                student_profile.interested_technologies = data.get(
+                    "interested_technologies", student_profile.interested_technologies
+                )
+                student_profile.contact_number = data.get("contact_number", student_profile.contact_number)
+                student_profile.resume = data.get("resume", student_profile.resume)
+                student_profile.github = data.get("github", student_profile.github)
+                student_profile.linkedin = data.get("linkedin", student_profile.linkedin)
+                student_profile.portfolio = data.get("portfolio", student_profile.portfolio)
+
+                student_profile.save()
+
+            return Response({"message": "Profile updated successfully!"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            # Log the error for debugging
+            print(f"Error updating profile: {str(e)}")
+            return Response({"error": "Failed to update profile."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

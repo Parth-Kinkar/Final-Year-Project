@@ -22,21 +22,16 @@ const StudentDashboard = () => {
         console.error("Error fetching user details:", error);
       }
     };
-
+  
     const fetchProjects = async () => {
       try {
-        const response = await axios.get(
-          "http://127.0.0.1:8000/auth/projects/",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-
-        const sortedProjects = response.data.sort(
-          (a, b) => b.rating - a.rating
-        );
+        const response = await axios.get("http://127.0.0.1:8000/auth/projects/", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+  
+        const sortedProjects = response.data.sort((a, b) => b.rating - a.rating);
         setTopProjects(sortedProjects.slice(0, 3)); // Top 3 projects
-
+  
         if (user && user.interested_technologies) {
           // Filter curated projects based on user's interests
           const curatedList = sortedProjects.filter((project) =>
@@ -55,20 +50,21 @@ const StudentDashboard = () => {
         console.error("Error fetching projects:", error);
       }
     };
-
+  
     if (token) {
-      fetchUserDetails();
-      fetchProjects();
+      fetchUserDetails().then(() => {
+        // Only fetch projects after user details are loaded
+        fetchProjects();
+      });
     }
-  }, [token, user]);
+  }, [token]); // Remove `user` from dependencies
 
   return (
     <div className="dashboard">
       {/* Sidebar */}
-      <div className="navbar">This is nav</div>
 
       <aside className="sidebar">
-        <div className="profile-card">
+        <div className="profile-card" onClick={() => navigate("/student-profile")}>
           <img
             src="https://cdn-icons-png.flaticon.com/512/147/147144.png"
             alt="Profile"
@@ -78,7 +74,7 @@ const StudentDashboard = () => {
           <p className="location">📍 SSGMCE, Shegaon</p>
           <div className="stats">
             <div>
-              <b>28</b>
+              <b>{user?.projects_created?.length || 0}</b>
               <span>Projects</span>
             </div>
           </div>
@@ -95,7 +91,7 @@ const StudentDashboard = () => {
                   onClick={() => navigate(`/project/${project.id}`)}
                   style={{ cursor: "pointer" }}
                 >
-                  {project.title} (⭐ {project.rating})<p>{project.creators}</p>
+                  {project.title} (⭐ {project.rating})<p>{project.creators.join(", ")}</p>
                 </li>
               ))
             ) : (

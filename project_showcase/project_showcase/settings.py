@@ -125,6 +125,10 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+# Session Settings
+SESSION_COOKIE_AGE = 86400  # 24 hours (in seconds)
+SESSION_SAVE_EVERY_REQUEST = True  # Save session on every request
+
 
 
 # Internationalization

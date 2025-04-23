@@ -10,6 +10,9 @@ import RecruiterDashboard from './components/RecruiterDashboard.jsx';
 import ProjectPage from './components/ProjectPage';
 import UploadProject from './components/UploadProject';
 import AllProjects from './components/AllProjects';
+import StudentProfile from './components/StudentProfile.jsx';
+import EditProfile from './components/EditProfile.jsx';
+import "./App.css";
 
 function App() {
   const [message, setMessage] = useState('');
@@ -27,6 +30,8 @@ function App() {
         <Route path="/project/:id" element={<ProjectPage />} />
         <Route path="/upload-project" element={<UploadProject />} />
         <Route path="/all-projects" element={<AllProjects />} />
+        <Route path="/student-profile" element={<StudentProfile />} />
+        <Route path="/edit-profile" element={<EditProfile />} />
       </Routes>
     </Router>
   );

@@ -27,26 +27,29 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
-
-# Student Serializer (New)
+    
+#Student Serializer:
 class StudentSerializer(serializers.ModelSerializer):
     user = UserSerializer()  # Nested user serializer
     department = DepartmentSerializer(read_only=True)  # Read department as a name
     department_id = serializers.PrimaryKeyRelatedField(
         queryset=Department.objects.all(), source='department', write_only=True
     )  # Allow writing department via ID
+    contact_number = serializers.CharField(required=False, allow_blank=True)  # Added phone number
+    bookmarked_projects = serializers.PrimaryKeyRelatedField(
+        queryset=Project.objects.all(), many=True, required=False
+    )  # Serialize bookmarked projects
+    full_name = serializers.CharField(required=False, allow_blank=True)  # Added full_name field
 
     class Meta:
         model = Student
-        fields = ['user', 'roll_number', 'department', 'department_id']
+        fields = ['user', 'roll_number', 'department', 'department_id', 'contact_number', 'bookmarked_projects', 'full_name']
 
 # Project Serializer (Unchanged)
 User = get_user_model()
 class ProjectSerializer(serializers.ModelSerializer):
     screenshots = serializers.ImageField(required=False)  # Allow image uploads
-    creators = serializers.PrimaryKeyRelatedField(
-        queryset=CustomUser.objects.filter(user_type='student'), many=True
-    )
+    creators = serializers.SerializerMethodField()
 
     class Meta:
         model = Project
@@ -58,6 +61,8 @@ class ProjectSerializer(serializers.ModelSerializer):
             'technologies': {'required': True}, 
             'repository_link': {'required': True},
         }
+    def get_creators(self, obj):
+        return [creator.username for creator in obj.creators.all()]
 
     def get_screenshots(self, obj):
         request = self.context.get('request')
