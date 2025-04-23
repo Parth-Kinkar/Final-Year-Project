@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import Login from './components/login';
+import Login from './components/Common/login.jsx';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Welcome from './components/welcome';
-import Signup from './components/signup';
-import StudentDashboard from './components/StudentDashboard';
-import TeacherDashboard from './components/TeacherDashboard';
-import AdminDashboard from './components/AdminDashboard';
-import RecruiterDashboard from './components/RecruiterDashboard.jsx';
-import ProjectPage from './components/ProjectPage';
-import UploadProject from './components/UploadProject';
-import AllProjects from './components/AllProjects';
-import StudentProfile from './components/StudentProfile.jsx';
-import EditProfile from './components/EditProfile.jsx';
+import Welcome from './components/Common/welcome.jsx';
+import Signup from './components/Common/signup.jsx';
+import StudentDashboard from './components/Students/StudentDashboard.jsx';
+import TeacherDashboard from './components/Teachers/TeacherDashboard.jsx';
+import AdminDashboard from './components/Admin/AdminDashboard.jsx';
+import RecruiterDashboard from './components/Recruiters/RecruiterDashboard.jsx';
+import ProjectPage from './components/Common/ProjectPage.jsx';
+import UploadProject from './components/Students/UploadProject.jsx';
+import ViewAllProjects from './components/Common/AllProjects.jsx';
+import StudentProfile from './components/Students/StudentProfile.jsx';
+import EditProfile from './components/Students/EditProfile.jsx';
+import ManageStudents from './components/Admin/ManageStudents.jsx';
+import ManageDepartments from './components/Admin/ManageDepartments.jsx';
 import "./App.css";
 
 function App() {
@@ -29,9 +31,11 @@ function App() {
         <Route path="/recruiter-dashboard" element={<RecruiterDashboard />} />
         <Route path="/project/:id" element={<ProjectPage />} />
         <Route path="/upload-project" element={<UploadProject />} />
-        <Route path="/all-projects" element={<AllProjects />} />
+        <Route path="/all-projects" element={<ViewAllProjects />} />
         <Route path="/student-profile" element={<StudentProfile />} />
         <Route path="/edit-profile" element={<EditProfile />} />
+        <Route path="/manage-students" element={<ManageStudents />} />
+        <Route path="/manage-departments" element={<ManageDepartments />} />
       </Routes>
     </Router>
   );

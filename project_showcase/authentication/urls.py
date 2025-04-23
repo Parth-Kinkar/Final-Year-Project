@@ -6,8 +6,7 @@ from .views import ProjectCreateView, ProjectListView, ProjectDetailView
 from .views import StudentListView, TeacherListView, UserDetailView, DepartmentListView
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import FilteredStudentListView, BookmarkProjectView, EditUserProfileView
-
+from .views import FilteredStudentListView, BookmarkProjectView, EditUserProfileView, SearchView, DepartmentChoicesView,   DepartmentCreateView, DepartmentDeleteView
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
@@ -22,6 +21,10 @@ urlpatterns = [
     path('students/filter/', FilteredStudentListView.as_view(), name='filtered-student-list'),
     path('projects/<int:project_id>/bookmark/', BookmarkProjectView.as_view(), name='bookmark-project'),
     path('user/edit/', EditUserProfileView.as_view(), name='edit-profile'),  # New URL for editing user profile
+    path('search/', SearchView.as_view(), name='search'),
+    path('departments/choices/', DepartmentChoicesView.as_view(), name='department-choices'),
+    path('departments/create/', DepartmentCreateView.as_view(), name='department-create'),
+    path('departments/<int:pk>/delete/', DepartmentDeleteView.as_view(), name='department-delete'),
 ] 
 
 if settings.DEBUG:

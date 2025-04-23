@@ -1,0 +1,258 @@
+/* General Layout */
+body{
+  margin-top: 210px; /* Moves everything down by 50px */
+}
+
+.dashboard {
+  display: flex;
+  height: auto;
+  font-family: "Poppins", sans-serif;
+  background: #f8f9fc;
+  color: #1d1d1d;
+  margin-top: 60px;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 20vw;
+  background: #ffffff;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  border-right: 2px solid #e6e6e6;
+}
+
+.profile-card {
+  text-align: center;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e6e6e6;
+}
+
+.profile-pic {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.profile-card h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.location {
+  color: #555;
+  font-size: 14px;
+}
+
+.stats {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 15px;
+}
+
+.stats div {
+  text-align: center;
+}
+
+.stats b {
+  font-size: 18px;
+  display: block;
+}
+
+.stats span {
+  font-size: 12px;
+  color: #777;
+}
+
+/* Top Projects */
+.top-projects {
+  margin-top: 20px;
+}
+
+.top-projects {
+  font-size: medium;
+  font-weight: 900;
+}
+
+.top-projects ul {
+  list-style: none;
+  padding: 0;
+}
+
+.top-projects li {
+  font-size: 14px;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.top-projects span {
+  color: #666;
+  font-size: 12px;
+}
+
+.view-all {
+  display: block;
+  text-align: right;
+  color: #4a49ef;
+  font-size: 13px;
+  text-decoration: none;
+  margin-top: 10px;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  padding: 20px;
+  width: 60vw;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header h2 {
+  font-size: 30px;
+  font-weight: 700;
+  padding-left: 40%;
+  text-align: center;
+}
+
+.upload {
+  background: #ffcc00;
+  padding: 8px 15px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.upload-icon {
+  margin-left: 8px;
+}
+
+/* Trending Projects */
+.trending-projects {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.projects-list {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.project-card {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  transition: 0.3s;
+}
+
+.project-card:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.project-info {
+  flex: 1;
+}
+
+.project-info h4 {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.project-info p {
+  font-size: 12px;
+  color: #666;
+}
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #888;
+  margin-top: 5px;
+}
+
+.save-icon {
+  font-size: 18px;
+  cursor: pointer;
+  color: #444;
+}
+
+/* Messages */
+.messages {
+  width: 20vw;
+  background: #fff;
+  padding: 20px;
+  border-left: 2px solid #e6e6e6;
+}
+
+.messages {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.messages ul {
+  list-style: none;
+  padding: 0;
+}
+
+.messages li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 14px;
+}
+
+.messages img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.msg-count {
+  background: #d4f5d2;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.view-all {
+  text-align: right;
+  display: block;
+  color: #4a49ef;
+  font-size: 13px;
+  text-decoration: none;
+  margin-top: 10px;
+}
+
+h3 {
+  font-size: 2rem;
+}
+
+.navbar{
+  background-color: #ffcc00;
+}

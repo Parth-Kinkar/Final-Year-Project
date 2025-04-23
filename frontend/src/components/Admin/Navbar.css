@@ -1,0 +1,118 @@
+/* General Navbar Styling */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 60px;
+  }
+  
+  /* Logo Section */
+  .logo {
+    width: auto;
+    height: 45px;
+    cursor: pointer;
+  }
+  
+  /* Search Bar */
+  .navbar-center {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .search-bar {
+    position: relative; /* Set the parent container to relative */
+    display: flex;
+    align-items: center;
+    width: 60%;
+    height: 40px;
+    max-width: 500px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 5px 10px;
+    background-color: #f9f9f9;
+  }
+  
+  
+  .search-bar input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 5px;
+    font-size: 14px;
+    background: none;
+  }
+  
+  .search-bar button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #007bff;
+    font-size: 16px;
+  }
+  
+  /* Profile and Logout Sections */
+  .navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .profile-link, .logout-link {
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    color: #007bff;
+  }
+  
+  .profile-link:hover, .logout-link:hover {
+    text-decoration: underline;
+  }
+
+  /* Search Dropdown */
+  .search-dropdown {
+    position: absolute; /* Align relative to the search-bar */
+    top: calc(100% + 5px); /* Slight gap below the search bar */
+    left: 0;
+    width: 100%; /* Match dropdown width to search-bar width */
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+  }
+  
+  
+  .dropdown-section {
+    margin: 10px 0;
+  }
+  
+  .dropdown-section h4 {
+    font-size: 14px;
+    margin: 5px 10px;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .dropdown-item:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .dropdown-img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }

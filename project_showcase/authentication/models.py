@@ -19,14 +19,46 @@ def validate_rating(value):
 # Custom Department Model
 class Department(models.Model):
     DEPARTMENT_CHOICES = [
-        ('CSE', 'Computer Science and Engineering'),
-        ('EE', 'Electrical Engineering'),
-        ('ME', 'Mechanical Engineering'),
-        ('CE', 'Civil Engineering'),
-        ('ETC', 'Electronics and Telecommunications Engineering'),
-    ]
+    ('CSE', 'Computer Science and Engineering'),
+    ('EE', 'Electrical Engineering'),
+    ('ME', 'Mechanical Engineering'),
+    ('CE', 'Civil Engineering'),
+    ('ETC', 'Electronics and Telecommunications Engineering'),
+    # General Science and Technology
+    ('PHY', 'Physics'),
+    ('CHE', 'Chemistry'),
+    ('MAT', 'Mathematics'),
+    ('BIO', 'Biology'),
+    ('ENV', 'Environmental Science'),
+    # General Arts and Humanities
+    ('ENG', 'English'),
+    ('HIS', 'History'),
+    ('GEO', 'Geography'),
+    ('PHI', 'Philosophy'),
+    ('POL', 'Political Science'),
+    # Business and Economics
+    ('ECO', 'Economics'),
+    ('BBA', 'Business Administration'),
+    ('ACC', 'Accounting'),
+    ('MGT', 'Management'),
+    ('FIN', 'Finance'),
+    # Medical and Health Sciences
+    ('MED', 'Medicine'),
+    ('DEN', 'Dentistry'),
+    ('NUR', 'Nursing'),
+    ('PHR', 'Pharmacy'),
+    ('PSY', 'Psychology'),
+    # Miscellaneous
+    ('LAW', 'Law'),
+    ('SOC', 'Sociology'),
+    ('EDU', 'Education'),
+    ('ART', 'Fine Arts'),
+    ('MUS', 'Music'),
+    ('ARC', 'Architecture'),
+    ('AGRI', 'Agricultural Science'),
+    ('AVI', 'Aviation Engineering'),
+]
     name = models.CharField(max_length=100, choices=DEPARTMENT_CHOICES, unique=True)
-
     def __str__(self):
         return self.get_name_display()
 

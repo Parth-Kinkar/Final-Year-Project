@@ -77,6 +77,24 @@ class DepartmentListView(generics.ListAPIView):
     serializer_class = DepartmentSerializer
     permission_classes = [permissions.AllowAny]
 
+class DepartmentChoicesView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        # Fetch DEPARTMENT_CHOICES dynamically from the model
+        choices = [{'value': value, 'label': label} for value, label in Department.DEPARTMENT_CHOICES]
+        return Response(choices)
+    
+class DepartmentCreateView(generics.CreateAPIView):
+    queryset = Department.objects.all()
+    serializer_class = DepartmentSerializer
+    permission_classes = [IsAuthenticated]  # Ensure only logged-in users can add
+    
+class DepartmentDeleteView(generics.DestroyAPIView):
+    queryset = Department.objects.all()
+    serializer_class = DepartmentSerializer
+    permission_classes = [IsAuthenticated]
+
 # Project Views (Unchanged)
 class ProjectListView(generics.ListAPIView):
     queryset = Project.objects.all()
@@ -184,3 +202,24 @@ class EditUserProfileView(APIView):
             # Log the error for debugging
             print(f"Error updating profile: {str(e)}")
             return Response({"error": "Failed to update profile."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class SearchView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        query = request.query_params.get('q', '').strip()
+
+        # Search matching profiles
+        matching_profiles = Student.objects.filter(
+        full_name__icontains=query
+        ).values('user_id', 'full_name', 'user__username', 'user__profile_photo')
+
+        # Search matching projects
+        matching_projects = Project.objects.filter(
+            title__icontains=query
+        ).values('id', 'title', 'description', 'creators__username')
+
+        return Response({
+            'profiles': list(matching_profiles),
+            'projects': list(matching_projects),
+        })
