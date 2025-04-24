@@ -90,7 +90,7 @@ class Student(models.Model):
     ]
 
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True, limit_choices_to={'user_type': 'student'})
-    roll_number = models.CharField(max_length=20, unique=True)
+    roll_number = models.CharField(max_length=20, blank=True, null=True)
     full_name = models.CharField(max_length=100, blank=True, null=True)  # Added full_name field
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True)
     year = models.CharField(max_length=1, choices=YEAR_CHOICES, default='1')

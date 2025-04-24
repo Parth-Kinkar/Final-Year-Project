@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'authentication',
     'corsheaders', 
+    'django_filters',
 ]
 
 STATIC_URL = '/static/'

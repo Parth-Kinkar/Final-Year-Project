@@ -1,4 +1,4 @@
-from rest_framework import generics, permissions, status
+from rest_framework import generics, permissions, status, filters
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
@@ -7,6 +7,11 @@ from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
 from .models import CustomUser, Project, Student, Department
 from .serializers import UserSerializer, ProjectSerializer, StudentSerializer, DepartmentSerializer
+from django_filters.rest_framework import DjangoFilterBackend
+import random
+import string
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
 
 # User Detail View (Updated to include profile_photo and full name)
 class UserDetailView(APIView):
@@ -223,3 +228,68 @@ class SearchView(APIView):
             'profiles': list(matching_profiles),
             'projects': list(matching_projects),
         })
+
+class StudentSearchView(generics.ListAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    
+    # Enable filtering by department and year
+    filterset_fields = ['department__id', 'year']
+    
+    # Enable searching by name, roll number, and email
+    search_fields = ['full_name', 'roll_number', 'user__email']
+
+class StudentUpdateView(generics.UpdateAPIView):
+    serializer_class = StudentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        user_id = self.kwargs.get("user_id")  # Fetching user ID from URL
+        return Student.objects.get(user__id=user_id)
+
+class StudentDeleteView(generics.DestroyAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        user_id = self.kwargs.get("user_id")  # Fetch user ID from URL
+        return Student.objects.get(user__id=user_id)
+
+class StudentCreateView(generics.CreateAPIView):
+    serializer_class = StudentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def generate_username(self, full_name):
+        base_username = full_name.lower().replace(" ", ".")  # Convert name to a clean username
+        random_suffix = str(random.randint(100, 999))  # Add random numbers to avoid duplicates
+        return f"{base_username}{random_suffix}"
+
+    def generate_password(self):
+        return ''.join(random.choices(string.ascii_letters + string.digits, k=10))  # 10-char password
+
+    def perform_create(self, serializer):
+        full_name = self.request.data.get("full_name")
+        email = self.request.data.get("email")
+
+        # Generate credentials
+        username = self.generate_username(full_name)
+        password = self.generate_password()
+
+        # Create the User
+        user = CustomUser.objects.create_user(username=username, password=password, email=email, user_type="student")
+        
+        # Assign user to student instance
+        student = serializer.save(user=user)
+
+        # Send login credentials (Optional - via email)
+        send_mail(
+            "Your Login Credentials",
+            f"Username: {username}\nPassword: {password}\nPlease log in and change your password.",
+            "admin@college.com",
+            [email],
+            fail_silently=True
+        )
+
+        return student

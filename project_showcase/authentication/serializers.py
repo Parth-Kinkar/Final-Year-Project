@@ -30,20 +30,29 @@ class UserSerializer(serializers.ModelSerializer):
     
 #Student Serializer:
 class StudentSerializer(serializers.ModelSerializer):
-    user = UserSerializer()  # Nested user serializer
-    department = DepartmentSerializer(read_only=True)  # Read department as a name
+    year_display = serializers.SerializerMethodField()
+    user = UserSerializer(read_only=True)  # Keep user as a nested object for frontend access
+    user_id = serializers.PrimaryKeyRelatedField(
+        queryset=CustomUser.objects.all(), source='user', write_only=True
+    )  # Allow updating via user_id
+    department = DepartmentSerializer(read_only=True)
     department_id = serializers.PrimaryKeyRelatedField(
         queryset=Department.objects.all(), source='department', write_only=True
-    )  # Allow writing department via ID
-    contact_number = serializers.CharField(required=False, allow_blank=True)  # Added phone number
-    bookmarked_projects = serializers.PrimaryKeyRelatedField(
-        queryset=Project.objects.all(), many=True, required=False
-    )  # Serialize bookmarked projects
-    full_name = serializers.CharField(required=False, allow_blank=True)  # Added full_name field
+    )  # Allow updating via department_id
 
     class Meta:
         model = Student
-        fields = ['user', 'roll_number', 'department', 'department_id', 'contact_number', 'bookmarked_projects', 'full_name']
+        fields = ['user', 'user_id', 'roll_number', 'department', 'department_id', 'contact_number', 'bookmarked_projects', 'full_name', 'year', 'year_display', 'interested_technologies', 'skills', 'resume', 'github', 'linkedin', 'portfolio']
+
+    def get_year_display(self, obj):
+        year_mapping = {
+            "1": "1st Year",
+            "2": "2nd Year",
+            "3": "3rd Year",
+            "4": "Final Year",
+        }
+        return year_mapping.get(obj.year, "Unknown")
+
 
 # Project Serializer (Unchanged)
 User = get_user_model()
