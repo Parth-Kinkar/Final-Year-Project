@@ -6,7 +6,7 @@ from .views import ProjectCreateView, ProjectListView, ProjectDetailView
 from .views import StudentListView, TeacherListView, UserDetailView, DepartmentListView
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import FilteredStudentListView, BookmarkProjectView, EditUserProfileView, SearchView, DepartmentChoicesView,   DepartmentCreateView, DepartmentDeleteView, StudentSearchView, StudentUpdateView, StudentDeleteView, StudentCreateView
+from .views import FilteredStudentListView, BookmarkProjectView, EditUserProfileView, SearchView, DepartmentChoicesView,   DepartmentCreateView, DepartmentDeleteView, StudentSearchView, StudentUpdateView, StudentDeleteView, StudentCreateView, download_excel_template, UploadExcelView, ConfirmUploadView
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
@@ -28,8 +28,10 @@ urlpatterns = [
     path('students/search/', StudentSearchView.as_view(), name='student-search-list'),
     path('students/<int:user_id>/update/', StudentUpdateView.as_view(), name='student-update'),
     path('students/<int:user_id>/delete/', StudentDeleteView.as_view(), name='student-delete'),
-    path('students/create', StudentCreateView.as_view(), name='student-create'),
-
+    path('students/create/', StudentCreateView.as_view(), name='student-create'),
+    path("download-excel/", download_excel_template, name="download_excel"),
+    path("upload-excel/", UploadExcelView.as_view(), name="upload_excel"),
+    path("confirm-upload/", ConfirmUploadView.as_view(), name="confirm_upload"),
 ] 
 
 if settings.DEBUG:

@@ -4,6 +4,7 @@ import "./ManageStudents.css"; // Assuming you have a CSS file for styling
 import EditStudentModal from "./EditStudentModal";
 import Navbar from "./Navbar.jsx"; // Import the Navbar component
 import CreateStudentModal from "./CreateStudentModal.jsx";
+import UploadExcelModal from "./UploadExcelModal.jsx"; // Import the UploadExcelModal component
 
 const ManageStudents = () => {
   const [students, setStudents] = useState([]);
@@ -14,15 +15,19 @@ const ManageStudents = () => {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   const [isCreateModalOpen, setCreateModalOpen] = useState(false);
+  const [isExcelModalOpen, setExcelModalOpen] = useState(false);
+
 
   const openEditModal = (student) => {
     setSelectedStudent(student);
     setEditModalOpen(true);
   };
+  
   const fetchStudents = async () => {
     try {
       const response = await axios.get("http://127.0.0.1:8000/auth/students/search/");
       setStudents(response.data);
+      
     } catch (error) {
       console.error("Error fetching students:", error);
     }
@@ -127,7 +132,7 @@ const ManageStudents = () => {
       {/* Buttons Section */}
       <div className="buttons-section">
         <button className="action-button" onClick={() => setCreateModalOpen(true)}>Create New Student</button>
-        <button className="action-button" >Upload Using Excel</button>
+        <button className="action-button" onClick={() => setExcelModalOpen(true)}>Upload Using Excel</button>
       </div>
 
       {/* Students Table */}
@@ -146,7 +151,7 @@ const ManageStudents = () => {
           <tbody>
             {students.map((student) => (
               <tr key={student.id}>
-                <td>{student.full_name}</td>
+                <td>{student.full_name || student.user.username}</td>
                 <td>{student.roll_number}</td>
                 <td>{student.year_display || "Unknown"}</td>
                 <td>{student.department.name}</td>
@@ -163,6 +168,8 @@ const ManageStudents = () => {
     {/* Edit Student Modal */}
       <EditStudentModal isOpen={isEditModalOpen} onClose={() => setEditModalOpen(false)} student={selectedStudent} />
       <CreateStudentModal isOpen={isCreateModalOpen} onClose={closeCreateModal} />
+      <UploadExcelModal isOpen={isExcelModalOpen} onClose={() => setExcelModalOpen(false)} />
+
     </div>
   );
 };

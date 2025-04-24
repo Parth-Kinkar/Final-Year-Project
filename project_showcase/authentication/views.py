@@ -12,6 +12,15 @@ import random
 import string
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
+from django.http import HttpResponse
+from .excel_generator import generate_excel_template  # Assuming you have this function in a separate file
+import openpyxl
+from django.http import JsonResponse
+from rest_framework.decorators import api_view
+from rest_framework.parsers import MultiPartParser
+
+def download_excel_template(request):
+    return generate_excel_template()
 
 # User Detail View (Updated to include profile_photo and full name)
 class UserDetailView(APIView):
@@ -66,7 +75,13 @@ class LoginView(generics.GenericAPIView):
             return Response({
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
-                'user_type': user.user_type
+                'user_type': user.user_type,
+                "user": {  # ✅ Ensure `user` object is correctly formatted
+                    "id": user.id,
+                    "username": user.username,
+                    "email": user.email,
+                    "user_type": user.user_type,
+                }
             })
         return Response({'error': 'Invalid credentials'}, status=400)
 
@@ -261,35 +276,150 @@ class StudentCreateView(generics.CreateAPIView):
     serializer_class = StudentSerializer
     permission_classes = [IsAuthenticated]
 
-    def generate_username(self, full_name):
-        base_username = full_name.lower().replace(" ", ".")  # Convert name to a clean username
-        random_suffix = str(random.randint(100, 999))  # Add random numbers to avoid duplicates
-        return f"{base_username}{random_suffix}"
+    def create(self, request, *args, **kwargs):
+        full_name = request.data.get("full_name")
+        email = request.data.get("email")
+        roll_number = request.data.get("roll_number")
+        year = request.data.get("year")
+        department_id = request.data.get("department_id")
 
-    def generate_password(self):
-        return ''.join(random.choices(string.ascii_letters + string.digits, k=10))  # 10-char password
+        if not full_name or not email or not roll_number or not department_id:
+            return Response({"error": "Missing required fields."}, status=status.HTTP_400_BAD_REQUEST)
 
-    def perform_create(self, serializer):
-        full_name = self.request.data.get("full_name")
-        email = self.request.data.get("email")
+        username = full_name.lower().replace(" ", ".") + str(random.randint(100, 999))
+        default_password = "Student@123"
 
-        # Generate credentials
-        username = self.generate_username(full_name)
-        password = self.generate_password()
-
-        # Create the User
-        user = CustomUser.objects.create_user(username=username, password=password, email=email, user_type="student")
-        
-        # Assign user to student instance
-        student = serializer.save(user=user)
-
-        # Send login credentials (Optional - via email)
-        send_mail(
-            "Your Login Credentials",
-            f"Username: {username}\nPassword: {password}\nPlease log in and change your password.",
-            "admin@college.com",
-            [email],
-            fail_silently=True
+        user = CustomUser.objects.create_user(
+            username=username,
+            password=default_password,
+            email=email,
+            user_type="student"
         )
 
-        return student
+        department = Department.objects.get(id=department_id)
+        Student.objects.create(user=user, roll_number=roll_number, department=department, year=year)
+
+        # ✅ Since `create()` returns the final response, it will NOT be overridden by serializer logic
+        return Response({
+            "message": "Student created successfully!",
+            "username": username,
+            "password": default_password
+        }, status=status.HTTP_201_CREATED)
+
+DEFAULT_PASSWORD = "Student@123"
+# class UploadExcelView(APIView):
+#     def post(self, request):
+#         file = request.FILES.get("excel_file")
+#         department_id = request.data.get("department_id")
+#         year = request.data.get("year")
+
+#         if not file or not department_id or not year:
+#             return Response({"error": "File, Year, or Department missing"}, status=status.HTTP_400_BAD_REQUEST)
+
+#         try:
+#             wb = openpyxl.load_workbook(file)
+#             ws = wb.active
+#             students = []
+#             department = Department.objects.get(id=department_id)
+
+#             for row in ws.iter_rows(min_row=2, values_only=True):  # Skip headers
+#                 full_name, email, roll_number = row
+
+#                 if not full_name or not email or not roll_number:
+#                     continue  # Skip invalid rows
+
+#                 # ✅ Generate username dynamically
+#                 username = full_name.lower().replace(" ", ".") + str(random.randint(100, 999))
+
+#                 # ✅ Create user and student entry
+#                 user = CustomUser.objects.create_user(
+#                     username=username,
+#                     password=DEFAULT_PASSWORD,
+#                     email=email,
+#                     user_type="student"
+#                 )
+
+#                 Student.objects.create(user=user, roll_number=roll_number, department=department, year=year)
+
+#                 students.append({
+#                     "full_name": full_name,
+#                     "email": email,
+#                     "roll_number": roll_number,
+#                     "username": username,
+#                     "password": DEFAULT_PASSWORD
+#                 })
+
+#             return Response({"students": students}, status=status.HTTP_201_CREATED)
+
+#         except Exception as e:
+#             return Response({"error": f"Invalid file format: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+class UploadExcelView(APIView):
+    def post(self, request):
+        file = request.FILES.get("excel_file")
+        department_id = request.data.get("department_id")
+        year = request.data.get("year")
+
+        if not file or not department_id or not year:
+            return Response({"error": "File, Year, or Department missing"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            wb = openpyxl.load_workbook(file)
+            ws = wb.active
+            students = []
+
+            for row in ws.iter_rows(min_row=2, values_only=True):  # Skip headers
+                full_name, email, roll_number = row
+
+                if not full_name or not email or not roll_number:
+                    continue  # Skip invalid rows
+
+                # ✅ Generate username dynamically but DON'T insert yet
+                username = full_name.lower().replace(" ", ".") + str(random.randint(100, 999))
+
+                students.append({
+                    "full_name": full_name,
+                    "email": email,
+                    "roll_number": roll_number,
+                    "username": username,
+                    "password": "Student@123"  # Common password
+                })
+
+            return Response({"students": students}, status=status.HTTP_200_OK)  # ✅ Just return preview data
+
+        except Exception as e:
+            return Response({"error": f"Invalid file format: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ConfirmUploadView(APIView):
+    def post(self, request):
+        students_data = request.data.get("students")
+
+        if not students_data:
+            return Response({"error": "No student data provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+        created_students = []
+        for student in students_data:
+            full_name = student.get("full_name")
+            email = student.get("email")
+            roll_number = student.get("roll_number")
+            username = student.get("username")
+            department_id = request.data.get("department_id")
+            year = request.data.get("year")
+
+            if not full_name or not email or not roll_number or not department_id or not year:
+                continue  # Skip invalid entries
+            if CustomUser.objects.filter(email=email).exists():
+                return Response({"error": f"Email {email} is already in use"}, status=status.HTTP_400_BAD_REQUEST)
+
+            department = Department.objects.get(id=department_id)
+            user = CustomUser.objects.create_user(
+                username=username,
+                password="Student@123",  # Default password
+                email=email,
+                user_type="student"
+            )
+
+            Student.objects.create(user=user, roll_number=roll_number, department=department, year=year)
+            created_students.append(student)
+
+        return Response({"message": "Students added successfully!", "students": created_students}, status=status.HTTP_201_CREATED)

@@ -27,6 +27,7 @@ const Login = () => {
         return;
       }
       localStorage.setItem('token', access);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
       if (user_type === 'student') {
         navigate('/student-dashboard');
       } else if (user_type === 'teacher') {

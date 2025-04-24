@@ -31,14 +31,27 @@ class UserSerializer(serializers.ModelSerializer):
 #Student Serializer:
 class StudentSerializer(serializers.ModelSerializer):
     year_display = serializers.SerializerMethodField()
-    user = UserSerializer(read_only=True)  # Keep user as a nested object for frontend access
+    
+    # Keep user as read-only for frontend display
+    user = UserSerializer(read_only=True)  
+    
+    # Ensure user_id is correctly handled in requests
     user_id = serializers.PrimaryKeyRelatedField(
         queryset=CustomUser.objects.all(), source='user', write_only=True
-    )  # Allow updating via user_id
+    )  
+    
     department = DepartmentSerializer(read_only=True)
     department_id = serializers.PrimaryKeyRelatedField(
         queryset=Department.objects.all(), source='department', write_only=True
-    )  # Allow updating via department_id
+    )  
+
+    # Explicitly validate year input
+    year = serializers.ChoiceField(choices=[("1", "1st Year"), ("2", "2nd Year"), ("3", "3rd Year"), ("4", "Final Year")])
+
+    # Ensure bookmarked_projects accepts multiple selections
+    bookmarked_projects = serializers.PrimaryKeyRelatedField(
+        queryset=Project.objects.all(), many=True, required=False
+    )  
 
     class Meta:
         model = Student
@@ -52,6 +65,7 @@ class StudentSerializer(serializers.ModelSerializer):
             "4": "Final Year",
         }
         return year_mapping.get(obj.year, "Unknown")
+
 
 
 # Project Serializer (Unchanged)
