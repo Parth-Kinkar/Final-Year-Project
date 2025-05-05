@@ -96,7 +96,7 @@ const Navbar = () => {
                         <div
                           key={project.id}
                           className="dropdown-item"
-                          onClick={() => navigate(`/projects/${project.id}`)}
+                          onClick={() => navigate(`/project/${project.id}`)}
                         >
                           <span>{project.title}</span>
                         </div>

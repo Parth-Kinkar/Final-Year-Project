@@ -13,7 +13,9 @@ const UploadExcelModal = ({ isOpen, onClose }) => {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/auth/departments/");
+        const response = await axios.get(
+          "http://127.0.0.1:8000/auth/departments/"
+        );
         setDepartments(response.data); // Store department list from API
       } catch (error) {
         console.error("Error fetching departments:", error);
@@ -34,24 +36,25 @@ const UploadExcelModal = ({ isOpen, onClose }) => {
       alert("Please select a file before uploading.");
       return;
     }
-    
+
     const formData = new FormData();
     formData.append("excel_file", selectedFile);
     formData.append("year", selectedYear);
     formData.append("department_id", selectedDepartment);
-  
+
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/auth/upload-excel/",
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
-  
-      setPreviewStudents(response.data.students);  // ✅ Store preview data for display
-  
+
+      setPreviewStudents(response.data.students); // ✅ Store preview data for display
     } catch (error) {
       console.error("Error uploading file:", error);
-      alert("Failed to process the file. Please check the format and try again.");
+      alert(
+        "Failed to process the file. Please check the format and try again."
+      );
     }
   };
   const handleConfirmUpload = async () => {
@@ -59,20 +62,23 @@ const UploadExcelModal = ({ isOpen, onClose }) => {
       alert("No students to confirm.");
       return;
     }
-  
+
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/auth/confirm-upload/",
-        { students: previewStudents, department_id: selectedDepartment, year: selectedYear },
+        {
+          students: previewStudents,
+          department_id: selectedDepartment,
+          year: selectedYear,
+        },
         { headers: { "Content-Type": "application/json" } }
       );
-  
+
       alert("Students added successfully!");
       console.log("Final added students:", response.data.students);
-  
-      setPreviewStudents([]);  // ✅ Clear preview after adding
-      onClose();  // ✅ Close modal after confirmation
-  
+
+      setPreviewStudents([]); // ✅ Clear preview after adding
+      onClose(); // ✅ Close modal after confirmation
     } catch (error) {
       console.error("Error confirming student addition:", error);
       alert("Failed to add students. Please try again.");
@@ -88,7 +94,11 @@ const UploadExcelModal = ({ isOpen, onClose }) => {
         <form>
           {/* Year Selection */}
           <label>Choose Year:</label>
-          <select value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)} required>
+          <select
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(e.target.value)}
+            required
+          >
             <option value="">Select Year</option>
             <option value="1">1st Year</option>
             <option value="2">2nd Year</option>
@@ -109,48 +119,53 @@ const UploadExcelModal = ({ isOpen, onClose }) => {
               </option>
             ))}
           </select>
-          <button type="button" onClick={handleDownloadTemplate}>Download Excel Template</button>
+          <button type="button" onClick={handleDownloadTemplate}>
+            Download Excel Template
+          </button>
 
           {/* File Upload Input ✅ */}
           <label>Upload Filled Excel File:</label>
           <input type="file" accept=".xlsx" onChange={handleFileChange} />
-          <button type="button" onClick={handleUploadFile}>Upload File</button>
-
-          
-          
+          <button type="button" onClick={handleUploadFile}>
+            Upload File
+          </button>
         </form>
         {/* Show Preview Table if Data Exists */}
-{previewStudents.length > 0 && (
-  <div className="preview-section">
-    <h3>Preview Uploaded Students</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Roll Number</th>
-          <th>Username</th>
-          <th>Password</th>
-        </tr>
-      </thead>
-      <tbody>
-        {previewStudents.map((student, index) => (
-          <tr key={index}>
-            <td>{student.full_name}</td>
-            <td>{student.email}</td>
-            <td>{student.roll_number}</td>
-            <td>{student.username}</td>
-            <td>{student.password}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+        {previewStudents.length > 0 && (
+          <div className="preview-section">
+            <h3>Preview Uploaded Students</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Roll Number</th>
+                  <th>Username</th>
+                  <th>Password</th>
+                </tr>
+              </thead>
+              <tbody>
+                {previewStudents.map((student, index) => (
+                  <tr key={index}>
+                    <td>{student.full_name}</td>
+                    <td>{student.email}</td>
+                    <td>{student.roll_number}</td>
+                    <td>{student.username}</td>
+                    <td>{student.password}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
 
-    {/* Add Confirmation Button to Actually Store Students in DB */}
-    <button type="button" onClick={handleConfirmUpload}>Confirm & Add Students</button>
-    <button type="button" onClick={onClose} className="cancel-button">Cancel</button>
-  </div>
-)}
+            {/* Add Confirmation Button to Actually Store Students in DB */}
+            <button type="button" onClick={handleConfirmUpload}>
+              Confirm & Add Students
+            </button>
+          </div>
+        )}
+        <button type="button" onClick={onClose} className="cancel-button">
+          Cancel
+        </button>
       </div>
     </div>
   );

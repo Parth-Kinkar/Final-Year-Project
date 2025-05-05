@@ -14,6 +14,7 @@ import StudentProfile from './components/Students/StudentProfile.jsx';
 import EditProfile from './components/Students/EditProfile.jsx';
 import ManageStudents from './components/Admin/ManageStudents.jsx';
 import ManageDepartments from './components/Admin/ManageDepartments.jsx';
+import ManageTeachers from './components/Admin/ManageTeachers.jsx';
 import "./App.css";
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
         <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/manage-students" element={<ManageStudents />} />
         <Route path="/manage-departments" element={<ManageDepartments />} />
+        <Route path="/manage-teachers" element={<ManageTeachers />} />
       </Routes>
     </Router>
   );

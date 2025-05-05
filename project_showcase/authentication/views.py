@@ -1,13 +1,15 @@
 from rest_framework import generics, permissions, status, filters
+from rest_framework.generics import ListCreateAPIView, CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
-from .models import CustomUser, Project, Student, Department
-from .serializers import UserSerializer, ProjectSerializer, StudentSerializer, DepartmentSerializer
+from .models import CustomUser, Project, Student, Department, Teacher
+from .serializers import UserSerializer, ProjectSerializer, StudentSerializer, DepartmentSerializer, TeacherSerializer
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
 import random
 import string
 from django.contrib.auth.models import User
@@ -146,12 +148,6 @@ class ProjectCreateView(APIView):
             
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# Teacher List View (Unchanged)
-class TeacherListView(generics.ListAPIView):
-    queryset = CustomUser.objects.filter(user_type='teacher')
-    serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
 # Fetch Students by Year and Department
 class FilteredStudentListView(generics.ListAPIView):
@@ -307,52 +303,6 @@ class StudentCreateView(generics.CreateAPIView):
         }, status=status.HTTP_201_CREATED)
 
 DEFAULT_PASSWORD = "Student@123"
-# class UploadExcelView(APIView):
-#     def post(self, request):
-#         file = request.FILES.get("excel_file")
-#         department_id = request.data.get("department_id")
-#         year = request.data.get("year")
-
-#         if not file or not department_id or not year:
-#             return Response({"error": "File, Year, or Department missing"}, status=status.HTTP_400_BAD_REQUEST)
-
-#         try:
-#             wb = openpyxl.load_workbook(file)
-#             ws = wb.active
-#             students = []
-#             department = Department.objects.get(id=department_id)
-
-#             for row in ws.iter_rows(min_row=2, values_only=True):  # Skip headers
-#                 full_name, email, roll_number = row
-
-#                 if not full_name or not email or not roll_number:
-#                     continue  # Skip invalid rows
-
-#                 # ✅ Generate username dynamically
-#                 username = full_name.lower().replace(" ", ".") + str(random.randint(100, 999))
-
-#                 # ✅ Create user and student entry
-#                 user = CustomUser.objects.create_user(
-#                     username=username,
-#                     password=DEFAULT_PASSWORD,
-#                     email=email,
-#                     user_type="student"
-#                 )
-
-#                 Student.objects.create(user=user, roll_number=roll_number, department=department, year=year)
-
-#                 students.append({
-#                     "full_name": full_name,
-#                     "email": email,
-#                     "roll_number": roll_number,
-#                     "username": username,
-#                     "password": DEFAULT_PASSWORD
-#                 })
-
-#             return Response({"students": students}, status=status.HTTP_201_CREATED)
-
-#         except Exception as e:
-#             return Response({"error": f"Invalid file format: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 class UploadExcelView(APIView):
     def post(self, request):
         file = request.FILES.get("excel_file")
@@ -423,3 +373,29 @@ class ConfirmUploadView(APIView):
             created_students.append(student)
 
         return Response({"message": "Students added successfully!", "students": created_students}, status=status.HTTP_201_CREATED)
+    
+# Teacher List View (Unchanged)
+class TeacherListView(ListAPIView):
+    queryset = Teacher.objects.all()
+    serializer_class = TeacherSerializer
+    filter_backends = [SearchFilter, DjangoFilterBackend]  # ✅ Enable filtering
+    search_fields = ["full_name", "user__email"]  # ✅ Allow search by name & email
+    filterset_fields = ["department"]  # ✅ Enable filtering by department
+
+# ✅ Create a new teacher with department lookup
+class TeacherCreateView(CreateAPIView):
+    serializer_class = TeacherSerializer
+
+    def perform_create(self, serializer):
+        department_id = self.request.data.get("department")  # ✅ Extract department ID
+        try:
+            department = Department.objects.get(id=department_id)  # ✅ Fetch department object
+        except Department.DoesNotExist:
+            raise serializers.ValidationError({"department": "Invalid department ID"})
+
+        serializer.save(department=department)  # ✅ Save teacher with valid department
+
+class TeacherUpdateView(UpdateAPIView):
+    queryset = Teacher.objects.all()
+    serializer_class = TeacherSerializer
+    lookup_field = "user_id"  # ✅ Lookup teacher by linked user ID

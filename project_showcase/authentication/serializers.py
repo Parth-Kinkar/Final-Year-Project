@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from .models import CustomUser, Project, Student, Department
+from .models import CustomUser, Project, Student, Department, Teacher
 from django.contrib.auth import get_user_model
+import random
 
 # Department Serializer
 class DepartmentSerializer(serializers.ModelSerializer):
@@ -99,3 +100,39 @@ class ProjectSerializer(serializers.ModelSerializer):
         if len(technologies) > 5:
             raise serializers.ValidationError("You can add up to 5 technologies only.")
         return value
+
+class TeacherSerializer(serializers.ModelSerializer):
+    user = UserSerializer(required=False)  # Accept user data as a dictionary
+    department = serializers.PrimaryKeyRelatedField(queryset=Department.objects.all()) # ✅ Handle ForeignKey
+
+    class Meta:
+        model = Teacher
+        fields = ['user', 'full_name', 'department', 'designation', 'specialization', 
+                  'experience', 'subjects_taught', 'contact_number', 'github', 'linkedin', 'portfolio']
+    def get_department(self, obj):
+        return obj.department.name if obj.department else None
+
+    def create(self, validated_data):
+        user_data = validated_data.pop("user")
+
+        # ✅ Generate dynamic username
+        username_base = validated_data.get("full_name", "").lower().replace(" ", ".")
+        username = username_base + str(random.randint(100, 999))
+
+        while CustomUser.objects.filter(username=username).exists():
+            username = username_base + str(random.randint(100, 999))
+
+        user_data["username"] = username
+        user_data["password"] = "Teacher@123"  # ✅ Assign default password
+        user_data["user_type"] = "teacher"
+
+        # ✅ Create user entry
+        user = CustomUser.objects.create_user(**user_data)
+        
+        # ✅ Ensure department is properly referenced
+        department = validated_data.pop("department")
+
+        # ✅ Create teacher entry with linked department
+        teacher = Teacher.objects.create(user=user, department=department, **validated_data)
+
+        return teacher

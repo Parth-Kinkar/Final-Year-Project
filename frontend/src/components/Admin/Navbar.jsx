@@ -38,7 +38,7 @@ const Navbar = () => {
       return (
         <nav className="navbar">
           {/* Left Section: Logo */}
-          <div className="navbar-left" onClick={() => navigate("/student-dashboard")}>
+          <div className="navbar-left" onClick={() => navigate("/admin-dashboard")}>
             <img
               src={`${process.env.PUBLIC_URL}/ProjectPulse logo.png`}
               alt="ProjectPulse Logo"

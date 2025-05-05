@@ -110,11 +110,22 @@ class Student(models.Model):
 # Other Models (Unchanged)
 class Teacher(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True, limit_choices_to={'user_type': 'teacher'})
-    department = models.CharField(max_length=100)
-    designation = models.CharField(max_length=100)
+    full_name = models.CharField(max_length=100)  # ✅ Store teacher's full name
+    department = models.ForeignKey(Department, on_delete=models.CASCADE)  # ✅ Use ForeignKey!
+    designation = models.CharField(max_length=100)  # ✅ Role (Assistant Prof, HOD, etc.)
+    specialization = models.CharField(max_length=150, blank=True, null=True)  # ✅ Expertise area
+    experience = models.IntegerField(default=0)  # ✅ Years of experience
+    subjects_taught = models.TextField(blank=True, null=True)  # ✅ Store subjects as comma-separated values
+    contact_number = models.CharField(max_length=15, blank=True, null=True)  # ✅ Contact details
+    github = models.URLField(blank=True, null=True)  # ✅ GitHub profile link
+    linkedin = models.URLField(blank=True, null=True)  # ✅ LinkedIn profile link
+    portfolio = models.URLField(blank=True, null=True)  # ✅ Portfolio website
 
     def __str__(self):
-        return self.user.username
+        return self.full_name
+
+
+
 
 
 class Recruiter(models.Model):

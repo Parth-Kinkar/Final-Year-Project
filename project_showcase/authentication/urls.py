@@ -3,10 +3,10 @@
 from django.urls import path
 from .views import RegisterView, LoginView
 from .views import ProjectCreateView, ProjectListView, ProjectDetailView
-from .views import StudentListView, TeacherListView, UserDetailView, DepartmentListView
+from .views import StudentListView, UserDetailView, DepartmentListView
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import FilteredStudentListView, BookmarkProjectView, EditUserProfileView, SearchView, DepartmentChoicesView,   DepartmentCreateView, DepartmentDeleteView, StudentSearchView, StudentUpdateView, StudentDeleteView, StudentCreateView, download_excel_template, UploadExcelView, ConfirmUploadView
+from .views import FilteredStudentListView, BookmarkProjectView, EditUserProfileView, SearchView, DepartmentChoicesView,   DepartmentCreateView, DepartmentDeleteView, StudentSearchView, StudentUpdateView, StudentDeleteView, StudentCreateView, download_excel_template, UploadExcelView, ConfirmUploadView, TeacherListView, TeacherCreateView, TeacherUpdateView
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
@@ -15,7 +15,6 @@ urlpatterns = [
     path('projects/create/', ProjectCreateView.as_view(), name='project-create'),
     path('projects/<int:pk>/', ProjectDetailView.as_view(), name='project-detail'), 
     path('students/', StudentListView.as_view(), name='student-list'),
-    path('teachers/', TeacherListView.as_view(), name='teacher-list'),
     path('user/', UserDetailView.as_view(), name='user-detail'),
     path('departments/', DepartmentListView.as_view(), name='department-list'),
     path('students/filter/', FilteredStudentListView.as_view(), name='filtered-student-list'),
@@ -32,6 +31,9 @@ urlpatterns = [
     path("download-excel/", download_excel_template, name="download_excel"),
     path("upload-excel/", UploadExcelView.as_view(), name="upload_excel"),
     path("confirm-upload/", ConfirmUploadView.as_view(), name="confirm_upload"),
+    path("teachers/", TeacherListView.as_view(), name="list_teachers"),
+    path("teachers/create/", TeacherCreateView.as_view(), name="create_teacher"),
+    path("teachers/<int:user_id>/update/", TeacherUpdateView.as_view(), name="update_teacher"),
 ] 
 
 if settings.DEBUG:
